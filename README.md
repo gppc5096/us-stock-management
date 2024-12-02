@@ -1,46 +1,107 @@
-# Getting Started with Create React App
+# US Stock Management App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 프로젝트 개요
+미국 주식 관리 앱은 실시간 데이터, 종합적인 추적 기능 및 직관적인 사용자 인터페이스를 통해 사용자가 미국 주식 투자를 추적하고 관리할 수 있도록 설계된 종합적인 React 기반 애플리케이션입니다.
 
-## Available Scripts
+## 기술 스택
+- **프론트엔드 프레임워크**: React 18
+- **언어**: TypeScript
+- **스타일링**: Tailwind CSS
+- **상태 관리**: React Hooks
+- **라우팅**: React Router Dom
+- **폰트**: Google Fonts (Gowun Dodum)
 
-In the project directory, you can run:
+## 프로젝트 구조
+```
+usa-stock-management-01/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── StockTransactionForm/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.css
+│   │   ├── StockListTable/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.css
+│   │   ├── AssetStatistics/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.css
+│   │   ├── CurrencyConverter/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.css
+│   │   └── RealTimePriceTracker/
+│   │       ├── index.tsx
+│   │       └── styles.css
+│   ├── hooks/
+│   │   ├── useLocalStorage.ts
+│   │   ├── useCurrencyConversion.ts
+│   │   └── useStockData.ts
+│   ├── services/
+│   │   ├── stockService.ts
+│   │   ├── currencyService.ts
+│   │   └── priceTrackingService.ts
+│   ├── utils/
+│   │   ├── calculateAssets.ts
+│   │   └── formatters.ts
+│   ├── App.tsx
+│   ├── index.tsx
+│   └── index.css
+├── package.json
+├── tsconfig.json
+├── tailwind.config.js
+├── .prettierrc
+└── .eslintrc
+```
 
-### `npm start`
+## 주요 기능
+1. **주식 거래 관리**
+   - 매수/매도 거래 입력
+   - 거래 내역 조회 및 관리
+   - 데이터 영구 저장 (LocalStorage)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+2. **자산 분석**
+   - 증권사별 자산 현황
+   - 종목별 포트폴리오 분석
+   - 실시간 수익률 계산
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+3. **환율 관리**
+   - 실시간 환율 정보
+   - 자동 환율 변환
+   - KRW/USD 동시 표시
 
-### `npm test`
+## 시작하기
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 설치
+```bash
+# 저장소 복제
+git clone https://github.com/your-username/usa-stock-management-01.git
 
-### `npm run build`
+# 프로젝트 폴더로 이동
+cd usa-stock-management-01
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# 의존성 설치
+npm install
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# 개발 서버 실행
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 빌드
+```bash
+# 프로덕션 빌드
+npm run build
+```
 
-### `npm run eject`
+## 기여하기
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## 라이선스
+This project is licensed under the MIT License - see the LICENSE file for details
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 문의
+- GitHub: [your-username](https://github.com/your-username)
+- Email: your.email@example.com
