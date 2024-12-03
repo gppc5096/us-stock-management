@@ -9,6 +9,7 @@ import CurrencyConverter from './components/CurrencyConverter';
 import RealTimePriceTracker from './components/RealTimePriceTracker';
 import BrokerAssetStatus from './components/BrokerAssetStatus';
 import StockPortfolioStatus from './components/StockPortfolioStatus';
+import Settings from './components/Settings';
 import { Transaction } from './types';
 
 function App() {
@@ -74,6 +75,11 @@ function App() {
           {/* 종목별 포트폴리오 현황 */}
           <div className="bg-white p-6 rounded-lg shadow">
             <StockPortfolioStatus />
+          </div>
+
+          {/* 설정 */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <Settings />
           </div>
         </main>
       </Suspense>
