@@ -16,7 +16,7 @@ function App() {
   };
 
   return (
-    <div className="App bg-gray-50">
+    <div className="App bg-slate-500">
       {/* 헤더 섹션 */}
       <header className="bg-blue-600 shadow">
         <div className="container mx-auto px-4 py-6">
@@ -39,13 +39,12 @@ function App() {
           </div>
 
           {/* 실시간 정보 섹션 */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-green-50 p-6 rounded-lg shadow">
-              <RealTimePriceTracker />
-            </div>
-            <div className="bg-yellow-50 p-6 rounded-lg shadow">
-              <CurrencyConverter />
-            </div>
+          <div className="bg-green-50 p-6 rounded-lg shadow">
+            <RealTimePriceTracker />
+          </div>
+          
+          <div className="bg-yellow-50 p-6 rounded-lg shadow">
+            <CurrencyConverter />
           </div>
 
           {/* 포트폴리오 분석 섹션 */}
