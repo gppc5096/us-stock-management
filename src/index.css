@@ -38,3 +38,16 @@ code {
 .market-ticker-content:hover {
   animation-play-state: paused;
 }
+
+.App {
+  background-color: rgb(243 244 246);
+}
+
+.content-wrapper {
+  padding-top: 160px; /* 헤더와 ticker의 높이에 따라 조정 */
+}
+
+.market-ticker-container {
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+}
