@@ -12,8 +12,8 @@ export interface StockQuote {
   price: number;
   change: number;
   changePercent: number;
-  volume: number;
-  timestamp: Date;
+  volume?: number;
+  timestamp?: Date;
 }
 
 export interface StockFinancials {
@@ -75,7 +75,57 @@ class StockService extends BaseApi {
 
   // 여러 종목 시세 일괄 조회
   async getBatchQuotes(symbols: string[]): Promise<StockQuote[]> {
-    return Promise.all(symbols.map(symbol => this.getQuote(symbol)));
+    try {
+      // 캐시 확인
+      const cachedData = localStorage.getItem('stockQuotes');
+      const cachedTime = localStorage.getItem('stockQuotesTime');
+      
+      if (cachedData && cachedTime) {
+        const now = new Date().getTime();
+        const cacheAge = now - Number(cachedTime);
+        
+        if (cacheAge < 5 * 60 * 1000) {
+          return JSON.parse(cachedData);
+        }
+      }
+
+      // 데모 데이터 생성
+      const demoData = symbols.map(symbol => ({
+        symbol,
+        price: Math.random() * 1000 + 100,
+        change: Math.random() * 20 - 10,
+        changePercent: Math.random() * 5 - 2.5,
+        volume: Math.floor(Math.random() * 1000000),
+        timestamp: new Date()
+      }));
+
+      // 데모 데이터 캐싱
+      localStorage.setItem('stockQuotes', JSON.stringify(demoData));
+      localStorage.setItem('stockQuotesTime', String(new Date().getTime()));
+
+      return demoData;
+
+      /* 실제 API 연동시 사용할 코드 (axios 필요)
+      const quotes = await Promise.all(
+        symbols.map(async (symbol) => {
+          const response = await fetch(`https://api.example.com/stocks/${symbol}`);
+          const data = await response.json();
+          return {
+            symbol,
+            price: data.price,
+            change: data.change,
+            changePercent: data.changePercent,
+            volume: data.volume,
+            timestamp: new Date(data.timestamp)
+          };
+        })
+      );
+      return quotes;
+      */
+    } catch (error) {
+      console.error('Stock API Error:', error);
+      throw new Error('주가 데이터를 가져오는데 실패했습니다.');
+    }
   }
 
   // 종목 검색

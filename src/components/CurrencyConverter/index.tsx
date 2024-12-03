@@ -1,104 +1,120 @@
-import React, { useState } from 'react';
-import { useCurrencyConversion } from '../../hooks/useCurrencyConversion';
-
-const CURRENCIES = ['USD', 'KRW', 'EUR', 'JPY', 'CNY'];
+import React, { useState, useEffect, useCallback } from 'react';
+import { formatters } from '../../utils/formatters';
+import { currencyService } from '../../services/currencyService';
 
 export const CurrencyConverter: React.FC = () => {
-  const [amount, setAmount] = useState<number>(0);
-  const [fromCurrency, setFromCurrency] = useState<string>('USD');
-  const [toCurrency, setToCurrency] = useState<string>('KRW');
+  const [amount, setAmount] = useState('');
+  const [displayValue, setDisplayValue] = useState('0');
+  const [fromCurrency, setFromCurrency] = useState('USD');
+  const [toCurrency, setToCurrency] = useState('KRW');
+  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const { convertedAmount, loading, error } = useCurrencyConversion(
-    amount,
-    fromCurrency,
-    toCurrency
-  );
+  // 환율 가져오기
+  const fetchExchangeRate = useCallback(async () => {
+    try {
+      setLoading(true);
+      const rate = await currencyService.getExchangeRate(fromCurrency, toCurrency);
+      setExchangeRate(rate);
+    } catch (error) {
+      console.error('환율 조회 실패:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [fromCurrency, toCurrency]);
 
-  const handleSwapCurrencies = () => {
-    setFromCurrency(toCurrency);
-    setToCurrency(fromCurrency);
+  // 통화 변경시 환율 갱신
+  useEffect(() => {
+    fetchExchangeRate();
+    const interval = setInterval(fetchExchangeRate, 60000); // 1분마다 갱신
+    return () => clearInterval(interval);
+  }, [fetchExchangeRate]);
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d.]/g, '');
+    
+    if (value === '') {
+      setAmount('');
+      setDisplayValue('0');
+    } else {
+      setAmount(value);
+      setDisplayValue(formatters.number.formatCurrency(Number(value), fromCurrency));
+    }
   };
 
+  const handleFocus = () => {
+    if (amount === '') {
+      setDisplayValue('');
+    }
+  };
+
+  const handleBlur = () => {
+    if (amount === '') {
+      setDisplayValue('0');
+    }
+  };
+
+  const convertedAmount = Number(amount || 0) * (exchangeRate || 0);
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-6">환율 변환</h2>
+    <div className="bg-white p-6 rounded-lg shadow">
+      <h2 className="text-xl font-bold mb-4">환율 변환</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* 금액 입력 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             금액
           </label>
           <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-            className="w-full p-2 border rounded-md"
-            min="0"
-            step="0.01"
+            type="text"
+            value={displayValue}
+            onChange={handleAmountChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            className="w-full px-3 py-2 border rounded"
           />
         </div>
 
-        {/* 통화 선택 */}
-        <div className="flex items-center gap-2">
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              변환 전
-            </label>
-            <select
-              value={fromCurrency}
-              onChange={(e) => setFromCurrency(e.target.value)}
-              className="w-full p-2 border rounded-md"
-            >
-              {CURRENCIES.map((currency) => (
-                <option key={currency} value={currency}>
-                  {currency}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button
-            onClick={handleSwapCurrencies}
-            className="mt-6 p-2 bg-gray-100 rounded-full hover:bg-gray-200"
-          >
-            ⇄
-          </button>
-
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              변환 후
-            </label>
-            <select
-              value={toCurrency}
-              onChange={(e) => setToCurrency(e.target.value)}
-              className="w-full p-2 border rounded-md"
-            >
-              {CURRENCIES.map((currency) => (
-                <option key={currency} value={currency}>
-                  {currency}
-                </option>
-              ))}
-            </select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            변환 결과
+          </label>
+          <div className="px-3 py-2 border rounded bg-gray-50">
+            {formatters.number.formatCurrency(convertedAmount, toCurrency)}
           </div>
         </div>
-      </div>
 
-      {/* 결과 표시 */}
-      <div className="mt-6">
-        {loading && <p className="text-gray-600">변환 중...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        {convertedAmount !== null && !loading && !error && (
-          <div className="text-lg">
-            <span className="font-medium">
-              {amount.toLocaleString()} {fromCurrency}
-            </span>
-            {' = '}
-            <span className="font-medium">
-              {convertedAmount.toLocaleString()} {toCurrency}
-            </span>
-          </div>
-        )}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            시작 통화
+          </label>
+          <select
+            value={fromCurrency}
+            onChange={(e) => setFromCurrency(e.target.value)}
+            className="w-full px-3 py-2 border rounded"
+          >
+            <option value="USD">USD (미국 달러)</option>
+            <option value="KRW">KRW (대한민국 원)</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            도착 통화
+          </label>
+          <select
+            value={toCurrency}
+            onChange={(e) => setToCurrency(e.target.value)}
+            className="w-full px-3 py-2 border rounded"
+          >
+            <option value="KRW">KRW (대한민국 원)</option>
+            <option value="USD">USD (미국 달러)</option>
+          </select>
+        </div>
+      </div>
+      <div className="text-sm text-gray-500 mt-4">
+        현재 환율: 1 {fromCurrency} = {exchangeRate ? formatters.number.format(exchangeRate) : '로딩 중...'} {toCurrency}
+        {loading && <span className="ml-2">갱신 중...</span>}
       </div>
     </div>
   );

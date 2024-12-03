@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Transaction } from './types';
+import { BrokerManagement } from './components/BrokerManagement';
 
 const StockTransactionForm = lazy(() => import('./components/StockTransactionForm'));
 const StockListTable = lazy(() => import('./components/StockListTable'));
@@ -9,11 +10,7 @@ const RealTimePriceTracker = lazy(() => import('./components/RealTimePriceTracke
 
 function App() {
   const handleTransactionSubmit = (transaction: Transaction) => {
-    const storedTransactions = JSON.parse(
-      localStorage.getItem('transactions') || '[]'
-    ) as Transaction[];
-    const updatedTransactions = [...storedTransactions, transaction];
-    localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
+    window.dispatchEvent(new Event('storage'));
   };
 
   return (
@@ -29,6 +26,9 @@ function App() {
       
       <Suspense fallback={<div>로딩 중...</div>}>
         <main className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <BrokerManagement />
+          </div>
           <StockTransactionForm onSubmit={handleTransactionSubmit} />
           <div className="mt-8">
             <RealTimePriceTracker />
