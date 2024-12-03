@@ -38,6 +38,11 @@ function App() {
             </div>
           </div>
 
+          {/* 거래 내역 */}
+          <div className="bg-cyan-50 p-6 rounded-lg shadow">
+            <StockListTable />
+          </div>
+
           {/* 실시간 정보 섹션 */}
           <div className="bg-green-50 p-6 rounded-lg shadow">
             <RealTimePriceTracker />
@@ -63,11 +68,6 @@ function App() {
           {/* 증권사별 자산현황 */}
           <div className="bg-orange-50 p-6 rounded-lg shadow">
             <BrokerAssetStatus />
-          </div>
-
-          {/* 거래 내역 */}
-          <div className="bg-cyan-50 p-6 rounded-lg shadow">
-            <StockListTable />
           </div>
         </main>
       </Suspense>
