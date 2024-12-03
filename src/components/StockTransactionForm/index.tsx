@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Transaction } from '../../types/index';
 import { Broker } from '../../types/broker';
 import { brokerService } from '../../services/brokerService';
@@ -17,12 +17,13 @@ export const StockTransactionForm: React.FC<StockTransactionFormProps> = ({ onSu
     date: new Date().toISOString().split('T')[0],
     type: 'BUY'
   });
+  const tickerInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setBrokers(brokerService.getActiveBrokers());
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const broker = brokers.find(b => b.id === formData.brokerId);
@@ -42,24 +43,29 @@ export const StockTransactionForm: React.FC<StockTransactionFormProps> = ({ onSu
       currency: 'USD'
     };
 
-    const existingTransactions = JSON.parse(
-      localStorage.getItem('transactions') || '[]'
-    ) as Transaction[];
-
-    const updatedTransactions = [...existingTransactions, transaction];
-
-    localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
-
-    onSubmit(transaction);
-    
-    setFormData({
-      ticker: '',
-      brokerId: '',
-      quantity: '',
-      price: '',
-      date: new Date().toISOString().split('T')[0],
-      type: 'BUY'
-    });
+    try {
+      const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      transactions.push(transaction);
+      
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      onSubmit(transaction);
+      
+      // 폼 초기화
+      setFormData({
+        ticker: '',
+        brokerId: '',
+        quantity: '',
+        price: '',
+        date: new Date().toISOString().split('T')[0],
+        type: 'BUY'
+      });
+      
+      // 커서를 종목코드 입력 필드로 이동
+      tickerInputRef.current?.focus();
+      
+    } catch (error) {
+      console.error('거래 저장 실패:', error);
+    }
   };
 
   const handleTickerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,6 +122,7 @@ export const StockTransactionForm: React.FC<StockTransactionFormProps> = ({ onSu
               종목 코드
             </label>
             <input
+              ref={tickerInputRef}
               type="text"
               value={formData.ticker}
               onChange={handleTickerChange}

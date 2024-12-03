@@ -1,84 +1,111 @@
-import React, { useState } from 'react';
-import { Broker } from '../../types/broker';
-import { brokerService } from '../../services/brokerService';
+import React, { useState, useEffect } from 'react';
+
+interface Broker {
+  id: number;
+  name: string;
+}
 
 export const BrokerManagement: React.FC = () => {
-  const [brokers, setBrokers] = useState<Broker[]>(brokerService.getBrokers());
-  const [isListExpanded, setIsListExpanded] = useState(false);
-  const [newBrokerName, setNewBrokerName] = useState('');
+  const [brokers, setBrokers] = useState<Broker[]>([]);
+  const [newBroker, setNewBroker] = useState('');
+  const [editingBroker, setEditingBroker] = useState<Broker | null>(null);
 
-  const handleAddBroker = (e: React.FormEvent) => {
+  useEffect(() => {
+    const savedBrokers = JSON.parse(localStorage.getItem('brokers') || '[]');
+    setBrokers(savedBrokers);
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newBrokerName.trim()) return;
-
-    brokerService.addBroker(newBrokerName.trim());
-    setBrokers(brokerService.getBrokers());
-    setNewBrokerName('');
+    
+    if (editingBroker) {
+      // 수정 모드
+      const updatedBrokers = brokers.map(broker => 
+        broker.id === editingBroker.id ? { ...broker, name: newBroker } : broker
+      );
+      setBrokers(updatedBrokers);
+      localStorage.setItem('brokers', JSON.stringify(updatedBrokers));
+      setEditingBroker(null);
+    } else {
+      // 새로운 증권사 추가
+      const newBrokerItem = {
+        id: Date.now(),
+        name: newBroker
+      };
+      const updatedBrokers = [...brokers, newBrokerItem];
+      setBrokers(updatedBrokers);
+      localStorage.setItem('brokers', JSON.stringify(updatedBrokers));
+    }
+    
+    setNewBroker('');
   };
 
-  const toggleBrokerStatus = (brokerId: string) => {
-    brokerService.toggleBrokerStatus(brokerId);
-    setBrokers(brokerService.getBrokers());
+  const handleEdit = (broker: Broker) => {
+    setEditingBroker(broker);
+    setNewBroker(broker.name);
+  };
+
+  const handleDelete = (brokerId: number) => {
+    if (window.confirm('이 증권사를 삭제하시겠습니까?')) {
+      const updatedBrokers = brokers.filter(broker => broker.id !== brokerId);
+      setBrokers(updatedBrokers);
+      localStorage.setItem('brokers', JSON.stringify(updatedBrokers));
+      
+      if (editingBroker?.id === brokerId) {
+        setEditingBroker(null);
+        setNewBroker('');
+      }
+    }
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-4">증권사 관리</h2>
-        <form onSubmit={handleAddBroker} className="flex gap-2">
+    <div>
+      <h2 className="text-xl font-bold mb-4">증권사 관리</h2>
+      
+      <form onSubmit={handleSubmit} className="mb-4">
+        <div className="flex gap-2">
           <input
             type="text"
-            value={newBrokerName}
-            onChange={(e) => setNewBrokerName(e.target.value)}
+            value={newBroker}
+            onChange={(e) => setNewBroker(e.target.value)}
+            className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="증권사명 입력"
-            className="flex-1 px-3 py-2 border rounded"
+            required
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
           >
-            추가
+            {editingBroker ? '수정' : '추가'}
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
 
-      <div 
-        className="flex justify-between items-center p-3 bg-gray-50 rounded cursor-pointer hover:bg-gray-100"
-        onClick={() => setIsListExpanded(!isListExpanded)}
-      >
+      <div className="space-y-2">
         <h3 className="font-semibold">등록된 증권사 목록</h3>
-        <span className="text-gray-500">
-          {isListExpanded ? '▼' : '▶'}
-        </span>
-      </div>
-
-      {isListExpanded && (
-        <div className="mt-2 space-y-2">
-          {brokers.map(broker => (
-            <div
-              key={broker.id}
-              className="flex justify-between items-center p-3 border rounded"
-            >
-              <div className="flex items-center gap-3">
-                <span className={`w-2 h-2 rounded-full ${
-                  broker.isActive ? 'bg-green-500' : 'bg-gray-300'
-                }`} />
-                <span>{broker.name}</span>
-              </div>
+        {brokers.map(broker => (
+          <div
+            key={broker.id}
+            className="flex items-center justify-between p-2 bg-white rounded-md shadow-sm"
+          >
+            <span>{broker.name}</span>
+            <div className="space-x-2">
               <button
-                onClick={() => toggleBrokerStatus(broker.id)}
-                className={`px-3 py-1 rounded text-sm ${
-                  broker.isActive
-                    ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                    : 'bg-green-100 text-green-600 hover:bg-green-200'
-                }`}
+                onClick={() => handleEdit(broker)}
+                className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
               >
-                {broker.isActive ? '비활성화' : '활성화'}
+                수정
+              </button>
+              <button
+                onClick={() => handleDelete(broker.id)}
+                className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+              >
+                삭제
               </button>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
