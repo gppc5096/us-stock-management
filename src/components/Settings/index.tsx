@@ -68,7 +68,7 @@ export const Settings: React.FC = () => {
     <div className="bg-gray-50 p-6 rounded-lg shadow">
       <h2 className="text-xl font-bold mb-6">설정</h2>
       
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
         {/* 초기화 섹션 */}
         <div className="p-4 bg-white rounded-lg shadow-sm">
           <h3 className="text-lg font-semibold mb-3">데이터 초기화</h3>
@@ -113,6 +113,11 @@ export const Settings: React.FC = () => {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* 저작권 문구 */}
+      <div className="text-right text-sm text-gray-500 mt-8 border-t pt-4">
+        2024. Copyright (c) made by <span className="tracking-widest">나 종 춘</span>
       </div>
 
       {/* 백업 파일명 입력 모달 */}
