@@ -12,3 +12,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@keyframes gentle-float {
+  0% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  100% { transform: translateX(-5px); }
+}
+
+.market-ticker-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(243 244 246);
+  padding: 0.75rem 0;
+  overflow: hidden;
+}
+
+.market-ticker-content {
+  display: inline-flex;
+  gap: 2rem;
+  animation: gentle-float 3s ease-in-out infinite;
+}
+
+/* 호버 시 애니메이션 일시 정지 */
+.market-ticker-content:hover {
+  animation-play-state: paused;
+}

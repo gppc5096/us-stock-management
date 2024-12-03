@@ -10,6 +10,7 @@ import RealTimePriceTracker from './components/RealTimePriceTracker';
 import BrokerAssetStatus from './components/BrokerAssetStatus';
 import StockPortfolioStatus from './components/StockPortfolioStatus';
 import Settings from './components/Settings';
+import MarketIndexTicker from './components/MarketIndexTicker';
 import { Transaction } from './types';
 
 function App() {
@@ -20,13 +21,16 @@ function App() {
   return (
     <div className="App bg-slate-500">
       {/* 헤더 섹션 */}
-      <header className="bg-blue-600 shadow">
+      <header className="bg-blue-600 shadow mb-4">
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold text-white">
             미국 주식 포트폴리오 관리
           </h1>
         </div>
       </header>
+
+      {/* 미국 3대 지수 스크롤 바 */}
+      <MarketIndexTicker />
 
       <Suspense fallback={<div>로딩 중...</div>}>
         <main className="container mx-auto px-4 py-8 space-y-8">
