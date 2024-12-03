@@ -9,6 +9,7 @@ export const BrokerManagement: React.FC = () => {
   const [brokers, setBrokers] = useState<Broker[]>([]);
   const [newBroker, setNewBroker] = useState('');
   const [editingBroker, setEditingBroker] = useState<Broker | null>(null);
+  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
 
   useEffect(() => {
     const savedBrokers = JSON.parse(localStorage.getItem('brokers') || '[]');
@@ -58,6 +59,10 @@ export const BrokerManagement: React.FC = () => {
     }
   };
 
+  const toggleAccordion = () => {
+    setIsAccordionOpen(!isAccordionOpen);
+  };
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">증권사 관리</h2>
@@ -82,29 +87,38 @@ export const BrokerManagement: React.FC = () => {
       </form>
 
       <div className="space-y-2">
-        <h3 className="font-semibold">등록된 증권사 목록</h3>
-        {brokers.map(broker => (
-          <div
-            key={broker.id}
-            className="flex items-center justify-between p-2 bg-white rounded-md shadow-sm"
-          >
-            <span>{broker.name}</span>
-            <div className="space-x-2">
-              <button
-                onClick={() => handleEdit(broker)}
-                className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+        <h3
+          className="font-semibold cursor-pointer"
+          onClick={toggleAccordion}
+        >
+          등록된 증권사 목록 {isAccordionOpen ? '▲' : '▼'}
+        </h3>
+        {isAccordionOpen && (
+          <div className="space-y-2">
+            {brokers.map(broker => (
+              <div
+                key={broker.id}
+                className="flex items-center justify-between p-2 bg-white rounded-md shadow-sm"
               >
-                수정
-              </button>
-              <button
-                onClick={() => handleDelete(broker.id)}
-                className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-              >
-                삭제
-              </button>
-            </div>
+                <span>{broker.name}</span>
+                <div className="space-x-2">
+                  <button
+                    onClick={() => handleEdit(broker)}
+                    className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+                  >
+                    수정
+                  </button>
+                  <button
+                    onClick={() => handleDelete(broker.id)}
+                    className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
