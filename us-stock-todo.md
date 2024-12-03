@@ -3,30 +3,30 @@
 ## 1. 초기 프로젝트 설정
 - [x] React 프로젝트 생성 (TypeScript 템플릿)
 - [x] 기본 의존성 설치 (React, TypeScript)
-- [ ] Tailwind CSS 설정
-- [ ] 구글 폰트 (고운 도둠) 설정
-- [ ] 프로젝트 구조 생성 (components, hooks, services, utils 폴더)
+- [x] Tailwind CSS 설정
+- [x] 구글 폰트 (고운 도둠) 설정
+- [x] 프로젝트 구조 생성 (components, hooks, services, utils 폴더)
 
 ## 2. 컴포넌트 개발
 ### 2.1 StockTransactionForm
-- [ ] 거래 입력 폼 UI 구현
-- [ ] 매수/매도 선택 기능
-- [ ] 날짜 선택기 구현
-- [ ] 입력 데이터 유효성 검사
-- [ ] LocalStorage 연동
+- [x] 거래 입력 폼 UI 구현
+- [x] 매수/매도 선택 기능
+- [x] 날짜 선택기 구현
+- [x] 입력 데이터 유효성 검사
+- [x] LocalStorage 연동
 
 ### 2.2 StockListTable
-- [ ] 거래 목록 테이블 UI 구현
-- [ ] 정렬 기능 구현
-- [ ] 필터링 기능 구현
-- [ ] CRUD 작업 구현
-- [ ] 페이지네이션 구현
+- [x] 거래 목록 테이블 UI 구현
+- [x] 정렬 기능 구현
+- [x] 필터링 기능 구현
+- [x] CRUD 작업 구현
+- [x] 페이지네이션 구현
 
 ### 2.3 AssetStatistics
-- [ ] 자산 통계 UI 구현
-- [ ] 증권사별 자산 분석 기능
-- [ ] 종목별 포트폴리오 분석
-- [ ] 차트 구현
+- [x] 자산 통계 UI 구현
+- [x] 증권사별 자산 분석 기능
+- [x] 종목별 포트폴리오 분석
+- [x] 차트 구현
 
 ### 2.4 CurrencyConverter
 - [ ] 환율 변환 UI 구현
@@ -41,7 +41,7 @@
 - [ ] 오류 처리 구현
 
 ## 3. Hooks 개발
-- [ ] useLocalStorage 구현
+- [x] useLocalStorage 구현
 - [ ] useCurrencyConversion 구현
 - [ ] useStockData 구현
 - [ ] 단위 테스트 작성
